@@ -22,7 +22,7 @@ pip install shap-hypetune
 lightgbm, xgboost are not needed requirements. The module depends only on NumPy and shap. Python 3.6 or above is supported.
 
 ## Media
-[Comig Soon]
+[SHAP for Feature Selection and HyperParameter Tuning](https://towardsdatascience.com/shap-for-feature-selection-and-hyperparameter-tuning-a330ec0ea104)
 
 ## Usage
 #### Only Hyperparameters Tuning
