@@ -26,7 +26,7 @@ lightgbm, xgboost are not needed requirements. The module depends only on NumPy 
 - [Boruta and SHAP for better Feature Selection](https://towardsdatascience.com/boruta-and-shap-for-better-feature-selection-20ea97595f4a)
 
 ## Usage
-```
+```python
 from scipy import stats
 from lightgbm import LGBMClassifier
 from shaphypetune import BoostSearch, BoostRFE, BoostBoruta
@@ -34,7 +34,7 @@ from shaphypetune import BoostSearch, BoostRFE, BoostBoruta
 
 #### Only Hyperparameters Tuning
 - GRID-SEARCH
-```
+```python
 param_grid = {'n_estimators': 150,
     	      'learning_rate': [0.2, 0.1],
               'num_leaves': [25, 30, 35],
@@ -44,7 +44,7 @@ model = BoostSearch(LGBMClassifier(), param_grid=param_grid)
 model.fit(X_train, y_train, eval_set=[(X_valid, y_valid)], early_stopping_rounds=6, verbose=0)
 ```
 - RANDOM-SEARCH
-```
+```python
 param_dist = {'n_estimators': 150,
     	      'learning_rate': stats.uniform(0.09, 0.25),
     	      'num_leaves': stats.randint(20,40),
@@ -55,27 +55,27 @@ model.fit(X_train, y_train, eval_set=[(X_valid, y_valid)], early_stopping_rounds
 ```
 #### Only Features Selection
 - RFE
-```
+```python
 model = BoostRFE(LGBMClassifier(),
                  min_features_to_select=1, step=1)
 model.fit(X_train, y_train, eval_set=[(X_valid, y_valid)], early_stopping_rounds=6, verbose=0)
 ```
 - Boruta
-```
+```python
 model = BoostBoruta(LGBMClassifier(),
                     max_iter=100, perc=100)
 model.fit(X_train, y_train, eval_set=[(X_valid, y_valid)], early_stopping_rounds=6, verbose=0)
 ```
 #### Only Features Selection with SHAP
 - RFE with SHAP
-```
+```python
 model = BoostRFE(LGBMClassifier(), 
                  min_features_to_select=1, step=1,
                  importance_type='shap_importances', train_importance=False)
 model.fit(X_train, y_train, eval_set=[(X_valid, y_valid)], early_stopping_rounds=6, verbose=0)
 ```
 - Boruta with SHAP
-```
+```python
 model = BoostBoruta(LGBMClassifier(),
                     max_iter=100, perc=100,
                     importance_type='shap_importances', train_importance=False)
@@ -83,7 +83,7 @@ model.fit(X_train, y_train, eval_set=[(X_valid, y_valid)], early_stopping_rounds
 ```
 #### Hyperparameters Tuning + Features Selection
 - RANDOM-SEARCH + RFE
-```
+```python
 param_dist = {'n_estimators': 150,
     	      'learning_rate': stats.uniform(0.09, 0.25),
     	      'num_leaves': stats.randint(20,40),
@@ -94,7 +94,7 @@ model = BoostRFE(LGBMClassifier(), param_grid=param_dist, n_iter=10, sampling_se
 model.fit(X_train, y_train, eval_set=[(X_valid, y_valid)], early_stopping_rounds=6, verbose=0)
 ```
 - RANDOM-SEARCH + Boruta
-```
+```python
 param_dist = {'n_estimators': 150,
     	      'learning_rate': stats.uniform(0.09, 0.25),
     	      'num_leaves': stats.randint(20,40),
@@ -106,7 +106,7 @@ model.fit(X_train, y_train, eval_set=[(X_valid, y_valid)], early_stopping_rounds
 ```
 #### Hyperparameters Tuning + Features Selection with SHAP
 - GRID-SEARCH + RFE with SHAP
-```
+```python
 param_grid = {'n_estimators': 150,
     	      'learning_rate': [0.2, 0.1],
               'num_leaves': [25, 30, 35],
@@ -118,7 +118,7 @@ model = BoostRFE(LGBMClassifier(), param_grid=param_grid,
 model.fit(X_train, y_train, eval_set=[(X_valid, y_valid)], early_stopping_rounds=6, verbose=0)
 ```
 - GRID-SEARCH + Boruta with SHAP
-```
+```python
 param_grid = {'n_estimators': 150,
     	      'learning_rate': [0.2, 0.1],
               'num_leaves': [25, 30, 35],
