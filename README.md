@@ -26,6 +26,12 @@ lightgbm, xgboost are not needed requirements. The module depends only on NumPy 
 - [Boruta and SHAP for better Feature Selection](https://towardsdatascience.com/boruta-and-shap-for-better-feature-selection-20ea97595f4a)
 
 ## Usage
+```
+from scipy import stats
+from lightgbm import LGBMClassifier
+from shaphypetune import BoostSearch, BoostRFE, BoostBoruta
+```
+
 #### Only Hyperparameters Tuning
 - GRID-SEARCH
 ```
