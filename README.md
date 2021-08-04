@@ -133,3 +133,5 @@ model.fit(X_train, y_train, eval_set=[(X_valid, y_valid)], early_stopping_rounds
 All the examples are reproducible in regression contexts and with XGBModel.
 
 More examples in the [notebooks folder](https://github.com/cerlymarco/shap-hypetune/tree/main/notebooks).
+
+**All the available estimators are fully integrable with sklearn (see [here](https://github.com/cerlymarco/shap-hypetune/blob/main/notebooks/sklearn-wrapper.ipynb)).**
