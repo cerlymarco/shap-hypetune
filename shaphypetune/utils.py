@@ -6,7 +6,7 @@ from shap import TreeExplainer
 
 
 def _check_boosting(model):
-    """Check if the estimator is a LGBMModel or XGBModel.
+    """Check if the estimator is a LGBModel or XGBModel.
     
     Returns
     -------
@@ -19,7 +19,7 @@ def _check_boosting(model):
                  ('XGB' if 'xgboost' in estimator_type else '')
     
     if len(boost_type) != 3:
-        raise ValueError("Pass a LGBMModel or XGBModel.")
+        raise ValueError("Pass a LGBModel or XGBModel.")
     
     return boost_type
 

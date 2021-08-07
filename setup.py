@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 HERE = pathlib.Path(__file__).parent
 
-VERSION = '0.1.0'
+VERSION = '0.1.1'
 PACKAGE_NAME = 'shap-hypetune'
 AUTHOR = 'Marco Cerliani'
 AUTHOR_EMAIL = 'cerlymarco@gmail.com'

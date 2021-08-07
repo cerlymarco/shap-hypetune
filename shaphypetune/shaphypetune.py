@@ -1,3 +1,4 @@
+import warnings
 import numpy as np
 import scipy as sp
 from copy import deepcopy
@@ -297,6 +298,9 @@ class BoostSearch(_BoostSearch):
         score : float
             Accuracy for classification, R2 for regression.
         """
+
+        if not hasattr(self, 'estimator_'):
+            raise AttributeError("Not fitted instance.")
                 
         return self.estimator_.score(X, y, sample_weight=sample_weight)
     
@@ -376,6 +380,12 @@ class _Boruta:
                 
         if 'feature_name' in _fit_params:  # LGB
             _fit_params['feature_name'] = 'auto'
+
+        if 'feature_weights' in _fit_params:  # XGB
+            warnings.warn(
+                "feature_weights is not supported when selecting features. "
+                "It's automatically set to None.")
+            _fit_params['feature_weights'] = None
                 
         return _fit_params
         
@@ -912,6 +922,12 @@ class _RFE:
             
         if 'feature_name' in _fit_params:  # LGB
             _fit_params['feature_name'] = 'auto'
+
+        if 'feature_weights' in _fit_params:  # XGB
+            warnings.warn(
+                "feature_weights is not supported when selecting features. "
+                "It's automatically set to None.")
+            _fit_params['feature_weights'] = None
             
         return _fit_params
     
@@ -1069,7 +1085,7 @@ class _RFE:
         if shapes[1] != self.support_.shape[0]:
             raise ValueError(
                 "Expected {} features, received {}.".format(
-                    self.support_.shape[0], shape[1]))
+                    self.support_.shape[0], shapes[1]))
         
         if isinstance(X, np.ndarray):
             return X[:, self.support_]
