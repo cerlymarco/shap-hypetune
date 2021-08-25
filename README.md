@@ -17,7 +17,7 @@ shap-hypetune aims to combine hyperparameters tuning and features selection in a
 
 ## Installation
 ```shell
-pip install shap-hypetune
+pip install --upgrade shap-hypetune
 ```
 lightgbm, xgboost are not needed requirements. The module depends only on NumPy and shap. Python 3.6 or above is supported.
 
