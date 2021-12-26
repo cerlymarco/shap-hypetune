@@ -1,7 +1,7 @@
 # shap-hypetune
 A python package for simultaneous Hyperparameters Tuning and Features Selection for Gradient Boosting Models.
 
-![shap-hypetune diagram](https://raw.githubusercontent.com/cerlymarco/shap-hypetune/master/imgs/shap-hypetune-diagram.png)
+![shap-hypetune diagram](https://raw.githubusercontent.com/cerlymarco/shap-hypetune/master/imgs/shap-hypetune-diagram.png#center)
 
 ## Overview
 Hyperparameters tuning and features selection are two common steps in every machine learning pipeline. Most of the time they are computed separately and independently. This may result in suboptimal performances and in a more time expensive process.
@@ -36,47 +36,47 @@ from shaphypetune import BoostSearch, BoostRFE, BoostRFA, BoostBoruta
 #### Hyperparameters Tuning
 ```python
 BoostSearch(
-    estimator,					            # LGBModel or XGBModel
-    param_grid=None,				        # parameters to be optimized
-    greater_is_better=False,			    # minimize or maximize the monitored score
-    n_iter=None,				            # number of sampled parameter configurations
-    sampling_seed=None,				        # the seed used for parameter sampling
-    verbose=1,					            # verbosity mode
-    n_jobs=None					            # number of jobs to run in parallel
+    estimator,                              # LGBModel or XGBModel
+    param_grid=None,                        # parameters to be optimized
+    greater_is_better=False,                # minimize or maximize the monitored score
+    n_iter=None,                            # number of sampled parameter configurations
+    sampling_seed=None,                     # the seed used for parameter sampling
+    verbose=1,                              # verbosity mode
+    n_jobs=None                             # number of jobs to run in parallel
 )
 ```
 #### Feature Selection (RFE)
 ```python
-BoostRFE(
+BoostRFE(  
     estimator,                              # LGBModel or XGBModel
-    min_features_to_select=None,            # the minimum number of features to be selected
-    step=1,	                                # number of features to remove at each iteration
-    param_grid=None,				        # parameters to be optimized
-    greater_is_better=False,		        # minimize or maximize the monitored score
-    importance_type='feature_importances',	# which importance measure to use: default or shap
-    train_importance=True,			        # where to compute the shap feature importance
-    n_iter=None,				            # number of sampled parameter configurations
-    sampling_seed=None,				        # the seed used for parameter sampling
-    verbose=1,					            # verbosity mode
-    n_jobs=None					            # number of jobs to run in parallel
-)
+    min_features_to_select=None,            # the minimum number of features to be selected  
+    step=1,                                 # number of features to remove at each iteration  
+    param_grid=None,                        # parameters to be optimized  
+    greater_is_better=False,                # minimize or maximize the monitored score  
+    importance_type='feature_importances',  # which importance measure to use: default or shap  
+    train_importance=True,                  # where to compute the shap feature importance  
+    n_iter=None,                            # number of sampled parameter configurations  
+    sampling_seed=None,                     # the seed used for parameter sampling  
+    verbose=1,                              # verbosity mode  
+    n_jobs=None                             # number of jobs to run in parallel  
+)  
 ```
 #### Feature Selection (BORUTA)
 ```python
 BoostBoruta(
-    estimator,					            # LGBModel or XGBModel
-    perc=100,					            # threshold used to compare shadow and real features
-    alpha=0.05,					            # p-value levels for feature rejection
-    max_iter=100,				            # maximum Boruta iterations to perform
-    early_stopping_boruta_rounds=None,	    # maximum iterations without confirming a feature
-    param_grid=None,				        # parameters to be optimized
-    greater_is_better=False,			    # minimize or maximize the monitored score
-    importance_type='feature_importances',	# which importance measure to use: default or shap
-    train_importance=True,			        # where to compute the shap feature importance
-    n_iter=None,				            # number of sampled parameter configurations
-    sampling_seed=None,				        # the seed used for parameter sampling
-    verbose=1,					            # verbosity mode
-    n_jobs=None					            # number of jobs to run in parallel
+    estimator,                              # LGBModel or XGBModel
+    perc=100,                               # threshold used to compare shadow and real features
+    alpha=0.05,                             # p-value levels for feature rejection
+    max_iter=100,                           # maximum Boruta iterations to perform
+    early_stopping_boruta_rounds=None,      # maximum iterations without confirming a feature
+    param_grid=None,                        # parameters to be optimized
+    greater_is_better=False,                # minimize or maximize the monitored score
+    importance_type='feature_importances',  # which importance measure to use: default or shap
+    train_importance=True,                  # where to compute the shap feature importance
+    n_iter=None,                            # number of sampled parameter configurations
+    sampling_seed=None,                     # the seed used for parameter sampling
+    verbose=1,                              # verbosity mode
+    n_jobs=None                             # number of jobs to run in parallel
 )
 ```
 #### Feature Selection (RFA)
@@ -84,15 +84,15 @@ BoostBoruta(
 BoostRFA(
     estimator,                              # LGBModel or XGBModel
     min_features_to_select=None,            # the minimum number of features to be selected
-    step=1,	                                # number of features to remove at each iteration
-    param_grid=None,				        # parameters to be optimized
-    greater_is_better=False,		        # minimize or maximize the monitored score
-    importance_type='feature_importances',	# which importance measure to use: default or shap
-    train_importance=True,			        # where to compute the shap feature importance
-    n_iter=None,				            # number of sampled parameter configurations
-    sampling_seed=None,				        # the seed used for parameter sampling
-    verbose=1,					            # verbosity mode
-    n_jobs=None					            # number of jobs to run in parallel
+    step=1,                                 # number of features to remove at each iteration
+    param_grid=None,                        # parameters to be optimized
+    greater_is_better=False,                # minimize or maximize the monitored score
+    importance_type='feature_importances',  # which importance measure to use: default or shap
+    train_importance=True,                  # where to compute the shap feature importance
+    n_iter=None,                            # number of sampled parameter configurations
+    sampling_seed=None,                     # the seed used for parameter sampling
+    verbose=1,                              # verbosity mode
+    n_jobs=None                             # number of jobs to run in parallel
 )
 ```
 
