@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 HERE = pathlib.Path(__file__).parent
 
-VERSION = '0.1.1'
+VERSION = '0.2.0'
 PACKAGE_NAME = 'shap-hypetune'
 AUTHOR = 'Marco Cerliani'
 AUTHOR_EMAIL = 'cerlymarco@gmail.com'
@@ -15,9 +15,11 @@ LONG_DESCRIPTION = (HERE / "README.md").read_text()
 LONG_DESC_TYPE = "text/markdown"
 
 INSTALL_REQUIRES = [
-    'shap>=0.39.0',
     'numpy',
-    'scipy'
+    'scipy',
+    'scikit-learn>=0.24.1',
+    'shap>=0.39.0',
+    'hyperopt==0.2.5'
 ]
 
 setup(name=PACKAGE_NAME,
