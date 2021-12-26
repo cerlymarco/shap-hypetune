@@ -209,9 +209,9 @@ class _BoostSearch(BaseEstimator):
             self.best_score_ = self.scores_[id_best]
             self.estimator_ = models[id_best]
 
-            for v in vars(self.estimator_):
+            for v in vars(models[id_best]):
                 if v.endswith("_") and not v.startswith("__"):
-                    setattr(self, str(v), getattr(self.estimator_, str(v)))
+                    setattr(self, str(v), getattr(models[id_best], str(v)))
 
         return self
 
