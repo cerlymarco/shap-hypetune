@@ -1,3 +1,5 @@
+import io
+import contextlib
 import warnings
 import numpy as np
 import scipy as sp
@@ -61,15 +63,16 @@ class _BoostSearch(BaseEstimator):
     def _fit(self, X, y, fit_params, params=None):
         """Private method to fit a single boosting model and extract results."""
 
-        if self.verbose < 1:
-            fit_params['verbose'] = 0
-
         model = self._build_model(params)
-        model.fit(X=X, y=y, **fit_params)
+        if isinstance(model, _BoostSelector):
+            model.fit(X=X, y=y, **fit_params)
+        else:
+            with contextlib.redirect_stdout(io.StringIO()):
+                model.fit(X=X, y=y, **fit_params)
 
         results = {'params': params, 'status': 'ok'}
 
-        if hasattr(model, 'estimator_'):
+        if isinstance(model, _BoostSelector):
             results['booster'] = model.estimator_
             results['model'] = model
         else:
@@ -444,7 +447,7 @@ class _Boruta(_BoostSelector):
         return dec_reg
 
     def fit(self, X, y, **fit_params):
-        """Private method to fit the Boruta algorithm and automatically tune
+        """Fit the Boruta algorithm to automatically tune
         the number of selected features."""
 
         self.boost_type_ = _check_boosting(self.estimator)
@@ -516,7 +519,8 @@ class _Boruta(_BoostSelector):
             _fit_params, estimator = self._check_fit_params(fit_params, feat_id_real)
             estimator.set_params(random_state=i + 1000)
             _X = self._create_X(X, feat_id_real)
-            estimator.fit(_X, y, **_fit_params)
+            with contextlib.redirect_stdout(io.StringIO()):
+                estimator.fit(_X, y, **_fit_params)
 
             # get coefs
             if self.importance_type == 'feature_importances':
@@ -583,7 +587,8 @@ class _Boruta(_BoostSelector):
                 "decrese perc.")
 
         _fit_params, self.estimator_ = self._check_fit_params(fit_params)
-        self.estimator_.fit(self.transform(X), y, **_fit_params)
+        with contextlib.redirect_stdout(io.StringIO()):
+            self.estimator_.fit(self.transform(X), y, **_fit_params)
 
         return self
 
@@ -658,7 +663,7 @@ class _RFE(_BoostSelector):
         return score
 
     def fit(self, X, y, **fit_params):
-        """Private method to fit the RFE algorithm and automatically tune
+        """Fit the RFE algorithm to automatically tune
         the number of selected features."""
 
         self.boost_type_ = _check_boosting(self.estimator)
@@ -705,8 +710,9 @@ class _RFE(_BoostSelector):
         self.support_ = np.ones(n_features, dtype=np.bool)
         self.ranking_ = np.ones(n_features, dtype=np.int)
         if scoring:
-            best_score = np.inf
             self.score_history_ = []
+            eval_score = np.max if self.greater_is_better else np.min
+            best_score = -np.inf if self.greater_is_better else np.inf
 
         while np.sum(self.support_) > min_features_to_select:
             # remaining features
@@ -716,7 +722,8 @@ class _RFE(_BoostSelector):
                 print("Fitting estimator with {} features".format(
                     self.support_.sum()))
 
-            estimator.fit(self.transform(X), y, **_fit_params)
+            with contextlib.redirect_stdout(io.StringIO()):
+                estimator.fit(self.transform(X), y, **_fit_params)
 
             # get coefs
             if self.importance_type == 'feature_importances':
@@ -739,7 +746,7 @@ class _RFE(_BoostSelector):
             if scoring:
                 score = self._step_score(estimator)
                 self.score_history_.append(score)
-                if score < best_score:
+                if best_score != eval_score([score, best_score]):
                     best_score = score
                     best_support = self.support_.copy()
                     best_ranking = self.ranking_.copy()
@@ -750,13 +757,14 @@ class _RFE(_BoostSelector):
 
         # set final attributes
         _fit_params, self.estimator_ = self._check_fit_params(fit_params)
-        self.estimator_.fit(self.transform(X), y, **_fit_params)
+        with contextlib.redirect_stdout(io.StringIO()):
+            self.estimator_.fit(self.transform(X), y, **_fit_params)
 
         # compute step score when only min_features_to_select features left
         if scoring:
             score = self._step_score(self.estimator_)
             self.score_history_.append(score)
-            if score >= best_score:
+            if best_score == eval_score([score, best_score]):
                 self.support_ = best_support
                 self.ranking_ = best_ranking
                 self.estimator_ = best_estimator
@@ -835,7 +843,7 @@ class _RFA(_BoostSelector):
         return score
 
     def fit(self, X, y, **fit_params):
-        """Private method to fit the RFE algorithm and automatically tune
+        """Fit the RFA algorithm to automatically tune
         the number of selected features."""
 
         self.boost_type_ = _check_boosting(self.estimator)
@@ -884,8 +892,9 @@ class _RFA(_BoostSelector):
         self.ranking_ = np.ones(n_features, dtype=np.int)
         self._ranking = np.ones(n_features, dtype=np.int)
         if scoring:
-            best_score = np.inf
             self.score_history_ = []
+            eval_score = np.max if self.greater_is_better else np.min
+            best_score = -np.inf if self.greater_is_better else np.inf
 
         while np.sum(self._support) > min_features_to_select:
             # remaining features
@@ -894,10 +903,11 @@ class _RFA(_BoostSelector):
             # scoring the previous added features
             if scoring and np.sum(self.support_) > 0:
                 _fit_params, estimator = self._check_fit_params(fit_params)
-                estimator.fit(self._transform(X), y, **_fit_params)
+                with contextlib.redirect_stdout(io.StringIO()):
+                    estimator.fit(self._transform(X), y, **_fit_params)
                 score = self._step_score(estimator)
                 self.score_history_.append(score)
-                if score < best_score:
+                if best_score != eval_score([score, best_score]):
                     best_score = score
                     best_support = self.support_.copy()
                     best_ranking = self.ranking_.copy()
@@ -908,9 +918,10 @@ class _RFA(_BoostSelector):
             if self.verbose > 1:
                 print("Fitting estimator with {} features".format(self._support.sum()))
 
-            _estimator.fit(self._transform(X, inverse=True), y, **_fit_params)
+            with contextlib.redirect_stdout(io.StringIO()):
+                _estimator.fit(self._transform(X, inverse=True), y, **_fit_params)
 
-            # get coefs
+                # get coefs
             if self.importance_type == 'feature_importances':
                 coefs = _feature_importances(_estimator)
             else:
@@ -934,13 +945,14 @@ class _RFA(_BoostSelector):
 
         # set final attributes
         _fit_params, self.estimator_ = self._check_fit_params(fit_params)
-        self.estimator_.fit(self._transform(X), y, **_fit_params)
+        with contextlib.redirect_stdout(io.StringIO()):
+            self.estimator_.fit(self._transform(X), y, **_fit_params)
 
-        # compute step score when only min_features_to_select features left
+            # compute step score when only min_features_to_select features left
         if scoring:
             score = self._step_score(self.estimator_)
             self.score_history_.append(score)
-            if score >= best_score:
+            if best_score == eval_score([score, best_score]):
                 self.support_ = best_support
                 self.ranking_ = best_ranking
                 self.estimator_ = best_estimator
