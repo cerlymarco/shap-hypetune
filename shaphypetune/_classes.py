@@ -718,10 +718,10 @@ class _RFE(_BoostSelector):
             # remaining features
             features = np.arange(n_features)[self.support_]
             _fit_params, estimator = self._check_fit_params(fit_params)
+
             if self.verbose > 1:
                 print("Fitting estimator with {} features".format(
                     self.support_.sum()))
-
             with contextlib.redirect_stdout(io.StringIO()):
                 estimator.fit(self.transform(X), y, **_fit_params)
 
@@ -757,6 +757,8 @@ class _RFE(_BoostSelector):
 
         # set final attributes
         _fit_params, self.estimator_ = self._check_fit_params(fit_params)
+        if self.verbose > 1:
+            print("Fitting estimator with {} features".format(self.support_.sum()))
         with contextlib.redirect_stdout(io.StringIO()):
             self.estimator_.fit(self.transform(X), y, **_fit_params)
 
@@ -878,7 +880,10 @@ class _RFA(_BoostSelector):
             else:
                 min_features_to_select = n_features // 2
         else:
-            min_features_to_select = self.min_features_to_select
+            if scoring:
+                min_features_to_select = self.min_features_to_select
+            else:
+                min_features_to_select = n_features - self.min_features_to_select
 
         if 0.0 < self.step < 1.0:
             step = int(max(1, self.step * n_features))
@@ -904,7 +909,7 @@ class _RFA(_BoostSelector):
             if scoring and np.sum(self.support_) > 0:
                 _fit_params, estimator = self._check_fit_params(fit_params)
                 with contextlib.redirect_stdout(io.StringIO()):
-                    estimator.fit(self._transform(X), y, **_fit_params)
+                    estimator.fit(self._transform(X, inverse=False), y, **_fit_params)
                 score = self._step_score(estimator)
                 self.score_history_.append(score)
                 if best_score != eval_score([score, best_score]):
@@ -917,11 +922,12 @@ class _RFA(_BoostSelector):
             _fit_params, _estimator = self._check_fit_params(fit_params, inverse=True)
             if self.verbose > 1:
                 print("Fitting estimator with {} features".format(self._support.sum()))
-
             with contextlib.redirect_stdout(io.StringIO()):
                 _estimator.fit(self._transform(X, inverse=True), y, **_fit_params)
+                if self._support.sum() == n_features:
+                    all_features_estimator = _estimator
 
-                # get coefs
+            # get coefs
             if self.importance_type == 'feature_importances':
                 coefs = _feature_importances(_estimator)
             else:
@@ -945,8 +951,10 @@ class _RFA(_BoostSelector):
 
         # set final attributes
         _fit_params, self.estimator_ = self._check_fit_params(fit_params)
+        if self.verbose > 1:
+            print("Fitting estimator with {} features".format(self._support.sum()))
         with contextlib.redirect_stdout(io.StringIO()):
-            self.estimator_.fit(self._transform(X), y, **_fit_params)
+            self.estimator_.fit(self._transform(X, inverse=False), y, **_fit_params)
 
             # compute step score when only min_features_to_select features left
         if scoring:
@@ -956,6 +964,11 @@ class _RFA(_BoostSelector):
                 self.support_ = best_support
                 self.ranking_ = best_ranking
                 self.estimator_ = best_estimator
+
+            if len(set(self.score_history_)) == 1:
+                self.support_ = np.ones(n_features, dtype=np.bool)
+                self.ranking_ = np.ones(n_features, dtype=np.int)
+                self.estimator_ = all_features_estimator
         self.n_features_ = self.support_.sum()
 
         return self
