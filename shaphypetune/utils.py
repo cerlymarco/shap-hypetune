@@ -174,6 +174,7 @@ class ParameterSampler(object):
         is_random = all(isinstance(p, list) or 'scipy' in str(type(p)).lower()
                         for p in param_distributions.values())
         is_hyperopt = all('hyperopt' in str(type(p)).lower()
+                          or (len(p) < 2 if isinstance(p, list) else False)
                           for p in param_distributions.values())
 
         if is_grid:
@@ -219,6 +220,11 @@ class ParameterSampler(object):
                     "n_iter must be an integer >0 when hyperopt "
                     "search spaces are provided. Get None."
                 )
+            param_distributions = {
+                k: p[0] if isinstance(p, list) else p
+                for k, p in param_distributions.items()
+            }
+
             return param_distributions, 'hyperopt'
 
         else:

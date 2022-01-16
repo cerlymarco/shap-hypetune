@@ -295,9 +295,11 @@ class BoostBoruta(_BoostSearch, _Boruta):
     def _build_model(self, params=None):
         """Private method to build model."""
 
+        estimator = clone(self.estimator)
+
         if params is None:
             model = _Boruta(
-                estimator=self.estimator,
+                estimator=estimator,
                 perc=self.perc,
                 alpha=self.alpha,
                 max_iter=self.max_iter,
@@ -308,9 +310,7 @@ class BoostBoruta(_BoostSearch, _Boruta):
             )
 
         else:
-            estimator = clone(self.estimator)
             estimator.set_params(**params)
-
             model = _Boruta(
                 estimator=estimator,
                 perc=self.perc,
@@ -499,9 +499,11 @@ class BoostRFE(_BoostSearch, _RFE):
     def _build_model(self, params=None):
         """Private method to build model."""
 
+        estimator = clone(self.estimator)
+
         if params is None:
             model = _RFE(
-                estimator=self.estimator,
+                estimator=estimator,
                 min_features_to_select=self.min_features_to_select,
                 step=self.step,
                 greater_is_better=self.greater_is_better,
@@ -511,9 +513,7 @@ class BoostRFE(_BoostSearch, _RFE):
             )
 
         else:
-            estimator = clone(self.estimator)
             estimator.set_params(**params)
-
             model = _RFE(
                 estimator=estimator,
                 min_features_to_select=self.min_features_to_select,
@@ -706,9 +706,11 @@ class BoostRFA(_BoostSearch, _RFA):
     def _build_model(self, params=None):
         """Private method to build model."""
 
+        estimator = clone(self.estimator)
+
         if params is None:
             model = _RFA(
-                estimator=self.estimator,
+                estimator=estimator,
                 min_features_to_select=self.min_features_to_select,
                 step=self.step,
                 greater_is_better=self.greater_is_better,
@@ -718,9 +720,7 @@ class BoostRFA(_BoostSearch, _RFA):
             )
 
         else:
-            estimator = clone(self.estimator)
             estimator.set_params(**params)
-
             model = _RFA(
                 estimator=estimator,
                 min_features_to_select=self.min_features_to_select,

@@ -181,12 +181,12 @@ class _BoostSearch(BaseEstimator):
                     fn=lambda p: self._fit(
                         params=p, X=X, y=y, fit_params=fit_params
                     ),
-                    space=self.param_grid, algo=tpe.suggest,
+                    space=self._param_combi, algo=tpe.suggest,
                     max_evals=self.n_iter, trials=trials,
                     rstate=np.random.RandomState(self.sampling_seed),
                     show_progressbar=False, verbose=0
                 )
-                all_results = sorted(trials.results, key=lambda x: x['loss'])
+                all_results = trials.results
 
             else:
                 all_results = Parallel(
@@ -200,10 +200,10 @@ class _BoostSearch(BaseEstimator):
                 self.trials_.append(job_res['params'])
                 self.iterations_.append(job_res['iterations'])
                 self.scores_.append(self._score_sign * job_res['loss'])
-                if job_res['model'] is None:
-                    models.append(job_res['booster'])
-                else:
+                if isinstance(job_res['model'], _BoostSelector):
                     models.append(job_res['model'])
+                else:
+                    models.append(job_res['booster'])
 
             # get the best
             id_best = self._eval_score(self.scores_)
@@ -401,12 +401,12 @@ class _Boruta(_BoostSelector):
             self.support_, self._cat_support, _fit_params, duplicate=True)
 
         if feat_id_real is None:  # final model fit
-            if 'eval_set' in fit_params:
+            if 'eval_set' in _fit_params:
                 _fit_params['eval_set'] = list(map(lambda x: (
                     self.transform(x[0]), x[1]
                 ), _fit_params['eval_set']))
         else:
-            if 'eval_set' in fit_params:  # iterative model fit
+            if 'eval_set' in _fit_params:  # iterative model fit
                 _fit_params['eval_set'] = list(map(lambda x: (
                     self._create_X(x[0], feat_id_real), x[1]
                 ), _fit_params['eval_set']))
@@ -627,7 +627,7 @@ class _RFE(_BoostSelector):
         _fit_params = _set_categorical_indexes(
             self.support_, self._cat_support, _fit_params)
 
-        if 'eval_set' in fit_params:
+        if 'eval_set' in _fit_params:
             _fit_params['eval_set'] = list(map(lambda x: (
                 self.transform(x[0]), x[1]
             ), _fit_params['eval_set']))
@@ -809,7 +809,7 @@ class _RFA(_BoostSelector):
         _fit_params = _set_categorical_indexes(
             self.support_, self._cat_support, _fit_params)
 
-        if 'eval_set' in fit_params:
+        if 'eval_set' in _fit_params:
             _fit_params['eval_set'] = list(map(lambda x: (
                 self._transform(x[0], inverse), x[1]
             ), _fit_params['eval_set']))
@@ -956,7 +956,7 @@ class _RFA(_BoostSelector):
         with contextlib.redirect_stdout(io.StringIO()):
             self.estimator_.fit(self._transform(X, inverse=False), y, **_fit_params)
 
-            # compute step score when only min_features_to_select features left
+        # compute step score when only min_features_to_select features left
         if scoring:
             score = self._step_score(self.estimator_)
             self.score_history_.append(score)
