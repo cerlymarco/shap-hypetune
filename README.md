@@ -29,6 +29,7 @@ lightgbm, xgboost are not needed requirements. The module depends only on NumPy,
 - [SHAP for Feature Selection and HyperParameter Tuning](https://towardsdatascience.com/shap-for-feature-selection-and-hyperparameter-tuning-a330ec0ea104)
 - [Boruta and SHAP for better Feature Selection](https://towardsdatascience.com/boruta-and-shap-for-better-feature-selection-20ea97595f4a)
 - [Recursive Feature Selection: Addition or Elimination?](https://towardsdatascience.com/recursive-feature-selection-addition-or-elimination-755e5d86a791)
+- [Boruta SHAP for Temporal Feature Selection](https://towardsdatascience.com/boruta-shap-for-temporal-feature-selection-96a7840c7713)
 
 ## Usage
 ```python
