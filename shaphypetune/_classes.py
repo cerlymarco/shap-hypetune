@@ -508,7 +508,7 @@ class _Boruta(_BoostSelector):
                 break
 
             if self.verbose > 1:
-                print('Iterantion: {} / {}'.format(i + 1, self.max_iter))
+                print('Iteration: {} / {}'.format(i + 1, self.max_iter))
 
             self._random_state = np.random.RandomState(i + 1000)
 
