@@ -8,7 +8,6 @@ from copy import deepcopy
 from sklearn.base import clone
 from sklearn.utils.validation import check_is_fitted
 from sklearn.base import BaseEstimator, TransformerMixin
-from sklearn.utils.metaestimators import if_delegate_has_method
 
 from joblib import Parallel, delayed
 from hyperopt import fmin, tpe
@@ -241,7 +240,6 @@ class _BoostSearch(BaseEstimator):
 
         return self.estimator_.predict(X, **predict_params)
 
-    @if_delegate_has_method(delegate='estimator')
     def predict_proba(self, X, **predict_params):
         """Predict X probabilities.
 
@@ -259,6 +257,9 @@ class _BoostSearch(BaseEstimator):
         """
 
         check_is_fitted(self)
+
+        # raise original AttributeError
+        getattr(self.estimator_, 'predict_proba')
 
         if hasattr(self, 'transform'):
             X = self.transform(X)
@@ -334,6 +335,31 @@ class _BoostSelector(BaseEstimator, TransformerMixin):
             return X.loc[:, self.support_]
         else:
             raise ValueError("Data type not understood.")
+
+    def get_support(self, indices=False):
+        """Get a mask, or integer index, of the features selected.
+
+        Parameters
+        ----------
+        indices : bool, default=False
+            If True, the return value will be an array of integers, rather
+            than a boolean mask.
+
+        Returns
+        -------
+        support : array
+            An index that selects the retained features from a feature vector.
+            If `indices` is False, this is a boolean array of shape
+            [# input features], in which an element is True iff its
+            corresponding feature is selected for retention. If `indices` is
+            True, this is an integer array of shape [# output features] whose
+            values are indices into the input feature vector.
+        """
+
+        check_is_fitted(self)
+
+        mask = self.support_
+        return mask if not indices else np.where(mask)[0]
 
 
 class _Boruta(_BoostSelector):
