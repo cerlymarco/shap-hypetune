@@ -182,7 +182,7 @@ class _BoostSearch(BaseEstimator):
                     ),
                     space=self._param_combi, algo=tpe.suggest,
                     max_evals=self.n_iter, trials=trials,
-                    rstate=np.random.RandomState(self.sampling_seed),
+                    rstate=np.random.default_rng(self.sampling_seed),
                     show_progressbar=False, verbose=0
                 )
                 all_results = trials.results
@@ -536,7 +536,7 @@ class _Boruta(_BoostSelector):
             if self.verbose > 1:
                 print('Iteration: {} / {}'.format(i + 1, self.max_iter))
 
-            self._random_state = np.random.RandomState(i + 1000)
+            self._random_state = np.random.default_rng(i + 1000)
 
             # add shadow attributes, shuffle and train estimator
             self.support_ = dec_reg >= 0

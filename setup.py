@@ -19,7 +19,7 @@ INSTALL_REQUIRES = [
     'scipy',
     'scikit-learn>=0.24.1',
     'shap>=0.39.0',
-    'hyperopt==0.2.5'
+    'hyperopt>=0.2.7'
 ]
 
 setup(name=PACKAGE_NAME,
