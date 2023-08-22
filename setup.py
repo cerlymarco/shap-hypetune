@@ -15,7 +15,7 @@ LONG_DESCRIPTION = (HERE / "README.md").read_text()
 LONG_DESC_TYPE = "text/markdown"
 
 INSTALL_REQUIRES = [
-    'numpy',
+    'numpy>=1.24',
     'scipy',
     'scikit-learn>=0.24.1',
     'shap>=0.39.0',
