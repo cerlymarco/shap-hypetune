@@ -65,7 +65,7 @@ def _feature_importances(model):
 def _get_categorical_support(n_features, fit_params):
     """Obtain boolean mask for categorical features"""
 
-    cat_support = np.zeros(n_features, dtype=np.bool)
+    cat_support = np.zeros(n_features, dtype=np.bool_)
     cat_ids = []
 
     msg = "When manually setting categarical features, " \

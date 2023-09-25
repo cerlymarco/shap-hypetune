@@ -518,13 +518,13 @@ class _Boruta(_BoostSelector):
 
         # holds the decision about each feature:
         # default (0); accepted (1); rejected (-1)
-        dec_reg = np.zeros(n_features, dtype=np.int)
-        dec_history = np.zeros((self.max_iter, n_features), dtype=np.int)
+        dec_reg = np.zeros(n_features, dtype=np.int_)
+        dec_history = np.zeros((self.max_iter, n_features), dtype=np.int_)
         # counts how many times a given feature was more important than
         # the best of the shadow features
-        hit_reg = np.zeros(n_features, dtype=np.int)
+        hit_reg = np.zeros(n_features, dtype=np.int_)
         # record the history of the iterations
-        imp_history = np.zeros(n_features, dtype=np.float)
+        imp_history = np.zeros(n_features, dtype=np.float_)
         sha_max_history = []
 
         for i in range(self.max_iter):
@@ -587,8 +587,8 @@ class _Boruta(_BoostSelector):
         confirmed = np.where(dec_reg == 1)[0]
         tentative = np.where(dec_reg == 0)[0]
 
-        self.support_ = np.zeros(n_features, dtype=np.bool)
-        self.ranking_ = np.ones(n_features, dtype=np.int) * 4
+        self.support_ = np.zeros(n_features, dtype=np.bool_)
+        self.ranking_ = np.ones(n_features, dtype=np.int_) * 4
         self.n_features_ = confirmed.shape[0]
         self.importance_history_ = imp_history[1:]
 
@@ -733,8 +733,8 @@ class _RFE(_BoostSelector):
         if step <= 0:
             raise ValueError("Step must be >0.")
 
-        self.support_ = np.ones(n_features, dtype=np.bool)
-        self.ranking_ = np.ones(n_features, dtype=np.int)
+        self.support_ = np.ones(n_features, dtype=np.bool_)
+        self.ranking_ = np.ones(n_features, dtype=np.int_)
         if scoring:
             self.score_history_ = []
             eval_score = np.max if self.greater_is_better else np.min
@@ -918,10 +918,10 @@ class _RFA(_BoostSelector):
         if step <= 0:
             raise ValueError("Step must be >0.")
 
-        self.support_ = np.zeros(n_features, dtype=np.bool)
-        self._support = np.ones(n_features, dtype=np.bool)
-        self.ranking_ = np.ones(n_features, dtype=np.int)
-        self._ranking = np.ones(n_features, dtype=np.int)
+        self.support_ = np.zeros(n_features, dtype=np.bool_)
+        self._support = np.ones(n_features, dtype=np.bool_)
+        self.ranking_ = np.ones(n_features, dtype=np.int_)
+        self._ranking = np.ones(n_features, dtype=np.int_)
         if scoring:
             self.score_history_ = []
             eval_score = np.max if self.greater_is_better else np.min
@@ -992,8 +992,8 @@ class _RFA(_BoostSelector):
                 self.estimator_ = best_estimator
 
             if len(set(self.score_history_)) == 1:
-                self.support_ = np.ones(n_features, dtype=np.bool)
-                self.ranking_ = np.ones(n_features, dtype=np.int)
+                self.support_ = np.ones(n_features, dtype=np.bool_)
+                self.ranking_ = np.ones(n_features, dtype=np.int_)
                 self.estimator_ = all_features_estimator
         self.n_features_ = self.support_.sum()
 
