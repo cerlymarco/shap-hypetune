@@ -587,7 +587,7 @@ class _Boruta(_BoostSelector):
         confirmed = np.where(dec_reg == 1)[0]
         tentative = np.where(dec_reg == 0)[0]
 
-        self.support_ = np.zeros(n_features, dtype=np.bool)
+        self.support_ = np.zeros(n_features, dtype=np.bool_)
         self.ranking_ = np.ones(n_features, dtype=np.int) * 4
         self.n_features_ = confirmed.shape[0]
         self.importance_history_ = imp_history[1:]
